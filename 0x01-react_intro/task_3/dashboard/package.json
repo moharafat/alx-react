@@ -12,7 +12,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -39,4 +42,5 @@
     "babel-jest": "^29.7.0",
     "jest": "^27.5.1"
   }
+  
 }
