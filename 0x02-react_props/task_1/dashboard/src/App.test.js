@@ -8,6 +8,11 @@ describe('<App />', () => {
     const wrapper = shallow(<App />);
     expect(wrapper.exists()).toBe(true);
   });
+  it('should contain notif. component', () => {
+    const wrapper = shallow(<App />);
+    wrapper.update();
+    expect(wrapper.find('Notification')).toHaveLength(1);
+  });
 
   it('renders a div with the class App-header', () => {
     const wrapper = shallow(<App />);
