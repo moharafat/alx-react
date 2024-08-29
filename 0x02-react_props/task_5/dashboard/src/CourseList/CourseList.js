@@ -2,7 +2,10 @@ import React from 'react';
 import CourseListRow from './CourseListRow';
 import './CourseList.css';
 
-function  CourseList() {
+import PropTypes from "prop-types";
+import CourseShape from "./CourseShape";
+
+function  CourseList({ listCourses}) {
   return (
     <table id="CourseList">
       <thead>
@@ -14,12 +17,32 @@ function  CourseList() {
         />
       </thead>
       <tbody>
-        <CourseListRow textFirstCell="ES6" textSecondCell="60"  isHeader={false} />
-        <CourseListRow textFirstCell="Webpack" textSecondCell="20"  isHeader={false} />
-        <CourseListRow textFirstCell="React" textSecondCell="40" isHeader={false} />
+        {listCourses.length === 0 && (
+          <CourseListRow
+            textFirstCell="No course available yet"
+            isHeader={false}
+          />
+        )}
+
+        {listCourses.map((course) => (
+          <CourseListRow
+            key={course.id}
+            textFirstCell={course.name}
+            textSecondCell={course.credit}
+            isHeader={false}
+          />
+        ))}
       </tbody>
     </table>
   );
 }
+
+CourseList.defaultProps = {
+  listCourses: [],
+};
+
+CourseList.propTypes = {
+  listCourses: PropTypes.arrayOf(CourseShape),
+};
 
 export default CourseList;
