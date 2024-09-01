@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import "./BodySection.css";
 
-class BodySection extends Comp onent {
+class BodySection extends Component {
   constructor(props) {
     super(props);
   }
