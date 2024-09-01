@@ -7,6 +7,8 @@ import './App.css';
 import CourseList from './CourseList/CourseList';
 import { getLatestNotification } from './utils';
 import PropTypes from 'prop-types';
+import BodySection from './BodySection/BodySection';
+import BodySectionWithMarginBottom from './BodySection/BodySectionWithMarginBottom';
 
 
 const listCourses = [
@@ -43,7 +45,7 @@ class App extends Component {
 
 
   render() {
-    const { isLoggedIn } = this.props;
+    const { isLoggedIn, logOut } = this.props;
 
     return (
       <>
@@ -52,8 +54,19 @@ class App extends Component {
           <Header />
         </div>
         <div className="App-body">
-          {!isLoggedIn ? <Login /> : <CourseList listCourses={listCourses} />}
+          {!isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
+            </BodySectionWithMarginBottom>
+          )}
         </div>
+        <BodySection title="News from the School">
+          <p>Text</p>
+        </BodySection>
         <div className="App-footer">
           <Footer />
         </div>
@@ -64,10 +77,12 @@ class App extends Component {
 
 App.defaultProps = {
   isLoggedIn: true,
+  logOut: () => {},
 };
 
 App.propTypes = {
   isLoggedIn: PropTypes.bool,
+  logOut: PropTypes.func,
 };
 
 export default App;
