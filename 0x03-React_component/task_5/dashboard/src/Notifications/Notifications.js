@@ -11,9 +11,17 @@ class Notifications extends Component {
     super(props);
     this.markAsRead = this.markAsRead.bind(this);
   }
-  markAsRead(id) {
-    console.log('Notification $id has been marked as read');
+
+  shouldComponentUpdate(nextProps) {
+    return (
+      nextProps.listNotifications.length > this.props.listNotifications.length
+    );
   }
+
+  markAsRead(id) {
+    console.log(`Notification ${id} has been marked as read`);
+  }
+
   render() {
     const { displayDrawer, listNotifications } = this.props;
     return (
@@ -39,13 +47,15 @@ class Notifications extends Component {
               {listNotifications.length === 0 && (
                 <NotificationItem value="No new notification for now" />
               )}
-  
+
               {listNotifications.map((notification) => (
                 <NotificationItem
                   key={notification.id}
+                  id={notification.id}
                   type={notification.type}
                   value={notification.value}
                   html={notification.html}
+                  markAsRead={this.markAsRead}
                 />
               ))}
             </ul>
@@ -55,8 +65,6 @@ class Notifications extends Component {
     );
   }
 }
-
-
 
 Notifications.defaultProps = {
   displayDrawer: false,
