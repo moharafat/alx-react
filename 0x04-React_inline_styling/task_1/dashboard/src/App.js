@@ -110,7 +110,7 @@ App.defaultProps = {
 };
 
 App.defaultProps = {
-  isLoggedIn: true,
+  isLoggedIn: false,
   logOut: () => {},
 };
 

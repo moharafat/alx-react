@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Notifications.css';
+import { StyleSheet, css } from 'aphrodite';
 import NotificationItem from './NotificationItem';
 import closeIcon from '../close-icon.png';
 import PropTypes from "prop-types";
@@ -26,11 +26,11 @@ class Notifications extends Component {
     const { displayDrawer, listNotifications } = this.props;
     return (
       <>
-        <div className="menuItem">
+        <div className={css(styles.menuItem)}>
           <p>Your notifications</p>
         </div>
         {displayDrawer && (
-          <div className="Notifications">
+          <div className={css(styles.Notifications)}>
             <button
               style={{
                 background: "transparent",
@@ -40,10 +40,10 @@ class Notifications extends Component {
               }}
               aria-label="close"
             >
-              <img src={closeIcon} alt="close-icon" />
+              <img src={closeIcon} alt="close-icon" className={css(styles.notificationsbutton)} />
             </button>
             <p>Here is the list of notifications</p>
-            <ul>
+            <ul className={css(styles.notificationsul)}>
               {listNotifications.length === 0 && (
                 <NotificationItem value="No new notification for now" />
               )}
@@ -65,6 +65,38 @@ class Notifications extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+	menuItem: {
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		textAlign: 'right',
+		fontWeight: 'bold',
+		padding: '5px',
+		paddingRight: '20px'
+	},
+
+	notifications: {
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		border: '2px dashed #e1354b',
+		paddingRight: '20px 5px',
+		margin: '5px',
+		position: 'fixed',
+		right: '1%',
+		left: '65%'
+	},
+
+  notificationsbutton:{
+  cursor: 'pointer',
+  width: '20px',
+  border: '2px dashed #e1354b',
+  background: 'none',
+  }, 
+  
+  notificationsul:{
+		paddingTop: '15px',
+		paddingLeft: '40px'
+  }
+});
 
 Notifications.defaultProps = {
   displayDrawer: false,
