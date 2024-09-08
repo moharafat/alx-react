@@ -9,6 +9,10 @@ import PropTypes from 'prop-types';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import { StyleSheet, css } from 'aphrodite';
+import { user, logOut } from "./AppContext";
+import AppContext from './AppContext';
+
+
 
 const listCourses = [
   { id: 1, name: "ES6", credit: 60 },
@@ -22,128 +26,153 @@ const listNotifications = [
   { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
 ];
 
+document.body.style.margin = 0;
+
 class App extends Component {
   constructor(props) {
     super(props);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleDisplayDrawer =this.handleDisplayDrawer.bind(this);
+    this.handleKeyCombination = this.handleKeyCombination.bind(this);
+    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
     this.handleHideDrawer = this.handleHideDrawer.bind(this);
-    this.state = { displayDrawer: false };
-  }
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyDown);
+    this.logIn = this.logIn.bind(this);
+    this.logOut = this.logOut.bind(this);
+    this.state = { displayDrawer: false, user, logOut: this.logOut };
   }
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown);
-  }
-  handleKeyDown(event) {
-    if (event.ctrlkey && event.key === 'h') {
+  handleKeyCombination(e) {
+    if (e.key === "h" && e.ctrlKey) {
       alert("Logging you out");
-      this.props.logOut();
-      // this.props.toggleDrawer();
+      this.state.logOut();
     }
   }
 
   handleDisplayDrawer() {
-    this.setState({ displayDrawer:true });
+    this.setState({ displayDrawer: true });
   }
 
   handleHideDrawer() {
     this.setState({ displayDrawer: false });
   }
 
+  logIn(email, password) {
+    this.setState({
+      user: {
+        email,
+        password,
+        isLoggedIn: true,
+      },
+    });
+  }
+
+  logOut() {
+    this.setState({ user });
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyCombination);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyCombination);
+  }
+
   render() {
-    const { isLoggedIn, logOut } = this.props;
-    const { displayDrawer } = this.state;
+    const {
+      user,
+      user: { isLoggedIn },
+      logOut,
+      displayDrawer,
+    } = this.state;
+
+    const value = { user, logOut };
 
     return (
-      <>
+      <AppContext.Provider value={value}>
         <Notifications
           listNotifications={listNotifications}
           displayDrawer={displayDrawer}
           handleDisplayDrawer={this.handleDisplayDrawer}
           handleHideDrawer={this.handleHideDrawer}
         />
-        <div className={css(styles.App)}>
-          <Header />
+        <div className={css(styles.container)}>
+          <div className={css(styles.app)}>
+            <Header />
+          </div>
+          <div className={css(styles.appBody)}>
+            {!isLoggedIn ? (
+              <BodySectionWithMarginBottom title="Log in to continue">
+                <Login logIn={this.logIn} />
+              </BodySectionWithMarginBottom>
+            ) : (
+              <BodySectionWithMarginBottom title="Course list">
+                <CourseList listCourses={listCourses} />
+              </BodySectionWithMarginBottom>
+            )}
+          </div>
+          <BodySection title="News from the School">
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+              survived not only five centuries, but also the leap into
+              electronic typesetting, remaining essentially unchanged. It was
+              popularised in the 1960s with the release of Letraset sheets
+              containing Lorem Ipsum passages, and more recently with desktop
+              publishing software like Aldus PageMaker including versions of
+              Lorem Ipsum.
+            </p>
+          </BodySection>
+
+          <div className={css(styles.footer)}>
+            <Footer />
+          </div>
         </div>
-         <div className={css(styles.AppBody)}>
-          {!isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
-            </BodySectionWithMarginBottom>
-          ) : (
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={listCourses} />
-            </BodySectionWithMarginBottom>
-          )}
-        </div>
-        <BodySection title="News from the School">
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of
-            type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into
-            electronic typesetting, remaining essentially unchanged. It was
-            popularised in the 1960s with the release of Letraset sheets
-            containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of
-            Lorem Ipsum.
-          </p>
-        </BodySection>
-        <div className={css(styles.AppFooter)}>
-          <Footer />
-        </div>
-      </>
+      </AppContext.Provider>
     );
   }
 }
+
+App.defaultProps = {};
+
+App.propTypes = {};
+
+const cssVars = {
+  mainColor: "#e01d3f",
+};
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
+
 const styles = StyleSheet.create({
-  App: {
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    margin: 0,
-    padding: 0
+  container: {
+    width: "calc(100% - 16px)",
+    marginLeft: "8px",
+    marginRight: "8px",
   },
 
-  AppBody: {
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    margin: 0,
-    padding: 0,
-    height: '60vh'
+  app: {
+    borderBottom: `3px solid ${cssVars.mainColor}`,
   },
 
-  AppFooter: {
-    fontFamily: 'Arial, Helvetica, sans-serif',
-    margin: 0,
-    padding: 0,
-    height: '6vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTop: '4px solid #e1354b'
+  appBody: {
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  footer: {
+    borderTop: `3px solid ${cssVars.mainColor}`,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    position: "fixed",
+    bottom: 0,
+    fontStyle: "italic",
+    [screenSize.small]: {
+      position: "static",
+    },
   },
 });
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func
-};
-
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {}
-};
-
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
 
 export default App;
