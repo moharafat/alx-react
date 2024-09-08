@@ -45,4 +45,5 @@ describe('<Notifications />', () => {
     expect(spy).toHaveBeenCalledWith('Notification 1 has been marked as read');
     spy.mockRestore();
   });
+  
 });
