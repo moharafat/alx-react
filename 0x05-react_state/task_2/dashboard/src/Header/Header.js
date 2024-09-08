@@ -1,31 +1,62 @@
-import React from 'react';
+import React,{Component} from 'react';
 import holberton_logo from '../holberton-logo.jpg';
 import { StyleSheet, css } from 'aphrodite';
+import AppContext from '../App/AppContext';
 
-
-function Header() {
-  return (
-    <div className={css(styles.Header)}>
-      <img src={holberton_logo} className={css(styles.HeaderLogo)} alt="logo" />
-      <h1>School dashboard</h1>
-    </div>
-  );
-}
-
-const styles = StyleSheet.create({
-	Header: {
-		fontfamily: 'Arial, Helvetica, sans-serif',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'flex-start',
-		color: '#e1354b',
-		borderBottom: '4px solid #e1354b'
-	},
-  HeaderLogo: {
-    width: '20%',
-    // edilo
-    marginRight: 200
+class Header extends Component {
+  constructor(props) {
+    super(props);
   }
 
+  render() {
+    const { user, logOut } = this.context;
+
+    return (
+      <div className={css(styles.header)}>
+        <img src={holberton_logo} className={css(styles.headerImg)} />
+        <h1>School dashboard</h1>
+
+        {user.isLoggedIn && (
+          <p id="logoutSection" className={css(styles.logoutSection)}>
+            Welcome <b>{`${user.email} `}</b>
+            <span onClick={logOut} className={css(styles.logoutSectionSpan)}>
+              (logout)
+            </span>
+          </p>
+        )}
+      </div>
+    );
+  }
+}
+
+const cssVars = {
+  mainColor: "#e01d3f",
+};
+
+const styles = StyleSheet.create({
+  header: {
+    display: "flex",
+    alignItems: "center",
+    color: cssVars.mainColor,
+    fontSize: "20px",
+  },
+
+  headerImg: {
+    width: "200px",
+  },
+  logoutSection: {
+    color: "black",
+    position: "absolute",
+    right: 0,
+    paddingRight: "20px",
+    alignSelf: "flex-end",
+  },
+  logoutSectionSpan: {
+    fontStyle: "italic",
+    cursor: "pointer",
+  },
 });
+
+Header.contextType = AppContext;
+
 export default Header;
