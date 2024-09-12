@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import areMapsEqual from './7-equality.js';
+import areMapsEqual from './7-equality';
 
 const map1 = new Map(
   {
